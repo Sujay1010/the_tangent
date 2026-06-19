@@ -2,7 +2,7 @@
 
 > *The part of the lecture nobody talks about.*
 
-A personal blog about educational and research concepts — written with sharp takes, genuine curiosity, and zero tolerance for boring explanations.
+A personal blog about educational and research concepts - written with sharp takes, genuine curiosity, and zero tolerance for boring explanations.
 
 ---
 
