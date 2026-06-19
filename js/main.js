@@ -83,20 +83,26 @@ if (canvas) {
     // fixed quadrant arc, pinned bottom-right
     ctx.beginPath();
     ctx.arc(center.x, center.y, R, Math.PI, Math.PI * 1.5);
-    ctx.strokeStyle = 'rgba(123,92,240,0.4)';
+    ctx.strokeStyle = 'rgba(155,140,245,0.85)';
     ctx.lineWidth = 2.5;
     ctx.lineCap = 'round';
+    ctx.shadowColor = '#7B5CF0';
+    ctx.shadowBlur = 18;
     ctx.stroke();
+    ctx.shadowBlur = 0;
 
     // faint persistent guide line
     const lineEndX = lineStart.x + dir.x * len;
     const lineEndY = lineStart.y + dir.y * len;
-    ctx.beginPath();
-    ctx.moveTo(lineStart.x, lineStart.y);
-    ctx.lineTo(lineEndX, lineEndY);
-    ctx.strokeStyle = 'rgba(123,92,240,0.16)';
-    ctx.lineWidth = 1.5;
-    ctx.stroke();
+   ctx.beginPath();
+   ctx.moveTo(lineStart.x, lineStart.y);
+   ctx.lineTo(lineEndX, lineEndY);
+   ctx.strokeStyle = 'rgba(155,140,245,0.35)';
+   ctx.lineWidth = 1.5;
+   ctx.shadowColor = '#7B5CF0';
+   ctx.shadowBlur = 8;
+   ctx.stroke();
+   ctx.shadowBlur = 0;
 
     // ease toward the actual scroll position
     smoothProgress += (scrollProgress - smoothProgress) * 0.08;
@@ -123,11 +129,20 @@ if (canvas) {
     ctx.shadowBlur = 0;
 
     // glowing head, following scroll
+   // glowing head, following scroll — comet style (soft halo + bright core)
     ctx.beginPath();
-    ctx.arc(headX, headY, 3, 0, Math.PI * 2);
-    ctx.fillStyle = '#fff';
-    ctx.shadowColor = '#fff';
-    ctx.shadowBlur = 12;
+    ctx.arc(headX, headY, 9, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(190,170,255,0.3)';
+    ctx.shadowColor = '#9B8CF5';
+    ctx.shadowBlur = 26;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+    
+    ctx.beginPath();
+    ctx.arc(headX, headY, 3.5, 0, Math.PI * 2);
+    ctx.fillStyle = '#ffffff';
+    ctx.shadowColor = '#ffffff';
+    ctx.shadowBlur = 22;
     ctx.fill();
     ctx.shadowBlur = 0;
 
