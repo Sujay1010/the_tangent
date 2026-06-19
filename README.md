@@ -64,7 +64,7 @@ the-tangent/
 
 
 
-Live at: `https://yourusername.github.io/the-tangent`
+Live at: `https://sujay1010.github.io/the-tangent`
 
 ---
 
