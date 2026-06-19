@@ -16,7 +16,7 @@ There are two types of writing here:
 
 | Format | Description |
 |---|---|
-| 🧠 **Brain Farts** | Short, reactive, probably half-baked — but honest. Quick thoughts that couldn't wait to be fully formed. |
+| 🧠 **Brain Farts** | Short, reactive, probably half-baked - but honest. Quick thoughts that couldn't wait to be fully formed. |
 | 🕳️ **Rabbit Holes** | Long-form deep dives. Magazine-style pieces that actually went somewhere. |
 
 ---
@@ -37,9 +37,9 @@ There are two types of writing here:
 
 Built with zero frameworks and zero dependencies — just:
 
-- **HTML** — structure
-- **CSS** — styling (Inter Tight font, electric purple `#7B5CF0` accent, dark theme)
-- **Vanilla JS** — animations (particle background, custom cursor, scroll reveals)
+- **HTML** - structure
+- **CSS** - styling (Inter Tight font, electric purple `#7B5CF0` accent, dark theme)
+- **Vanilla JS** - animations (particle background, custom cursor, scroll reveals)
 
 No build tools. No npm. No nonsense. Open `index.html` in a browser and it works.
 
