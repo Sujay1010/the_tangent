@@ -192,3 +192,21 @@ canvas#bg {
 .intro-spacer {
   height: 100vh;
 }
+
+.intro-tangent {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: min(48vw, 460px);
+  height: min(48vw, 460px);
+  pointer-events: none;
+}
+.intro-spark {
+  animation: introSparkPulse 2.6s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+@keyframes introSparkPulse {
+  0%, 100% { opacity: 0.6; transform: scale(0.85); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
