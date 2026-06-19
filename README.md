@@ -38,22 +38,11 @@ There are two types of writing here:
 Built with zero frameworks and zero dependencies — just:
 
 - **HTML** - structure
-- **CSS** - styling (Inter Tight font, electric purple `#7B5CF0` accent, dark theme)
-- **Vanilla JS** - animations (particle background, custom cursor, scroll reveals)
-
-No build tools. No npm. No nonsense. Open `index.html` in a browser and it works.
+- **CSS** - styling 
+- **Vanilla JS** - animations 
 
 ---
 
-## Design
-
-- **Theme:** Dark, bold, minimal
-- **Accent:** Electric Purple `#7B5CF0`
-- **Font:** Inter (900 weight headings)
-- **Animations:** Ambient particle network, custom cursor with lag ring, scroll-triggered reveals
-- **Responsive:** Mobile friendly
-
----
 
 ## Folder Structure
 
@@ -72,19 +61,8 @@ the-tangent/
 
 ---
 
-## Adding a New Article
 
-1. Duplicate `article.html`
-2. Rename it (e.g. `why-entropy-matters.html`)
-3. Replace the title, content, tags, and meta info inside the file
-4. Add a link to it from `brain-farts.html` or `rabbit-holes.html`
-5. Commit and push — GitHub Pages deploys automatically
 
----
-
-## Deployment
-
-Hosted on **GitHub Pages** — free, no credits, no expiry.
 
 Live at: `https://yourusername.github.io/the-tangent`
 
