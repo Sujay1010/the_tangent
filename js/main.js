@@ -61,6 +61,78 @@ if (heroTitle) {
   setTimeout(typeNext, 300);
 }
 
+(function() {
+  const canvas = document.getElementById('bg');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let W, H;
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const STAR_COUNT = 90;
+  const stars = [];
+  for (let i = 0; i < STAR_COUNT; i++) {
+    stars.push({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      r: Math.random() * 1.3 + 0.6,
+      vx: (Math.random() - 0.5) * 0.05,
+      vy: (Math.random() - 0.5) * 0.05,
+      phase: Math.random() * Math.PI * 2,
+      speed: 0.4 + Math.random() * 0.5,
+      baseAlpha: 0.35 + Math.random() * 0.5
+    });
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    const t = Date.now() / 1000;
+
+    stars.forEach(s => {
+      s.x += s.vx; s.y += s.vy;
+      if (s.x < 0) s.x = W; if (s.x > W) s.x = 0;
+      if (s.y < 0) s.y = H; if (s.y > H) s.y = 0;
+    });
+
+    ctx.lineWidth = 0.6;
+    stars.forEach((a, i) => {
+      let nearest = null, nd = Infinity;
+      stars.forEach((b, j) => {
+        if (i === j) return;
+        const d = Math.hypot(a.x - b.x, a.y - b.y);
+        if (d < nd && d < 110) { nd = d; nearest = b; }
+      });
+      if (nearest) {
+        ctx.beginPath();
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(nearest.x, nearest.y);
+        ctx.strokeStyle = `rgba(123,92,240,${0.22 * (1 - nd / 110)})`;
+        ctx.stroke();
+      }
+    });
+
+    stars.forEach(s => {
+      const twinkle = 0.5 + 0.5 * Math.sin(t * s.speed + s.phase);
+      const alpha = s.baseAlpha * 0.5 + s.baseAlpha * 0.5 * twinkle;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(235,230,255,${alpha})`;
+      ctx.shadowColor = 'rgba(155,140,245,0.8)';
+      ctx.shadowBlur = 4;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    });
+
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+ 
 // ============================================
 // 2. HOVER GLOW ON CARDS
 // ============================================
@@ -171,3 +243,18 @@ setTimeout(() => {
     if (rect.top < window.innerHeight) el.classList.add('visible');
   });
 }, 0);
+
+(function() {
+  const intro = document.getElementById('introScreen');
+  if (!intro) return;
+
+  function update() {
+    const fadeDistance = window.innerHeight * 0.8;
+    const progress = Math.min(1, window.scrollY / fadeDistance);
+    intro.style.opacity = 1 - progress;
+    intro.style.transform = `translateY(${-progress * 50}px) scale(${1 - progress * 0.06})`;
+    intro.style.pointerEvents = progress >= 1 ? 'none' : 'auto';
+  }
+  window.addEventListener('scroll', update);
+  update();
+})();
