@@ -22,6 +22,73 @@ if (canvas) {
     });
   }
 
+  // SCROLL PROGRESS (0 to 1, top to bottom of page)
+  let scrollProgress = 0;
+  let smoothProgress = 0;
+  function updateScrollProgress() {
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    scrollProgress = max > 0 ? window.scrollY / max : 0;
+  }
+  window.addEventListener('scroll', updateScrollProgress);
+  updateScrollProgress();
+
+  // TANGENT LINE + QUADRANT ARC (logo motif, driven by scroll)
+  function drawTangent() {
+    smoothProgress += (scrollProgress - smoothProgress) * 0.08;
+
+    const R = Math.min(W, H) * 0.38;
+    const cx = W * 0.78;
+    const cy = H * 0.18;
+
+    const startAngle = Math.PI / 2; // pointing down
+    const endAngle = 0;             // pointing right
+
+    // static quadrant arc
+    ctx.beginPath();
+    ctx.arc(cx, cy, R, startAngle, endAngle, true);
+    ctx.strokeStyle = 'rgba(123,92,240,0.35)';
+    ctx.lineWidth = 2;
+    ctx.lineCap = 'round';
+    ctx.stroke();
+
+    // current angle along the arc, based on scroll
+    const theta = startAngle + (endAngle - startAngle) * smoothProgress;
+    const px = cx + R * Math.cos(theta);
+    const py = cy + R * Math.sin(theta);
+
+    // tangent direction = perpendicular to the radius at (px, py)
+    const dx = -Math.sin(theta);
+    const dy = Math.cos(theta);
+    const len = Math.max(W, H) * 1.2;
+
+    ctx.beginPath();
+    ctx.moveTo(px - dx * len, py - dy * len);
+    ctx.lineTo(px + dx * len, py + dy * len);
+    const grad = ctx.createLinearGradient(px - dx * len, py - dy * len, px + dx * len, py + dy * len);
+    grad.addColorStop(0,   'rgba(155,140,245,0)');
+    grad.addColorStop(0.5, 'rgba(123,92,240,0.85)');
+    grad.addColorStop(1,   'rgba(155,140,245,0)');
+    ctx.strokeStyle = grad;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // white flash at the point of contact
+    const pulse = 4 + Math.sin(Date.now() / 300) * 1.5;
+    ctx.beginPath();
+    ctx.arc(px, py, pulse, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(255,255,255,0.95)';
+    ctx.shadowColor = '#fff';
+    ctx.shadowBlur = 18;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    ctx.beginPath();
+    ctx.arc(px, py, pulse + 3, 0, Math.PI * 2);
+    ctx.strokeStyle = 'rgba(123,92,240,0.5)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+
   function drawParticles() {
     ctx.clearRect(0, 0, W, H);
     particles.forEach(p => {
@@ -46,6 +113,7 @@ if (canvas) {
         }
       });
     });
+    drawTangent();
     requestAnimationFrame(drawParticles);
   }
   drawParticles();
