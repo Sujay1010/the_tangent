@@ -22,41 +22,24 @@ if (canvas) {
     });
   }
 
-  // === SCROLL-DRIVEN TANGENT BEAM ===
-  // Quarter-circle arc fixed at the bottom-right corner of the screen.
-  // As you scroll, a glowing point travels along a fixed tangent line —
-  // starting near that corner — and sparkles right as it crosses the arc.
-  // Size is capped so this stays a contained corner accent on any screen
-  // (it used to stretch into the page content on wide/laptop screens).
-
-  let scrollProgress = 0;
-  let smoothProgress = 0;
-  function updateScrollProgress() {
-    const max = document.documentElement.scrollHeight - window.innerHeight;
-    const raw = max > 0 ? window.scrollY / max : 0;
-    scrollProgress = Math.min(1, Math.max(0, raw));
-  }
-  window.addEventListener('scroll', updateScrollProgress);
-  updateScrollProgress();
+  let progress = 0;
+  let traveling = false;
+  window.addEventListener('wheel', () => { traveling = true; });
+  window.addEventListener('scroll', () => { traveling = true; });
 
   let beamGeo = null; // recomputed on resize
   function computeBeamGeometry() {
-    const center = { x: W, y: H }; // circle pinned to the bottom-right corner
+    const center = { x: W, y: H };
 
-    // capped radius — never lets the motif grow past a sensible corner accent
     const R = Math.min(280, Math.min(W, H) * 0.34);
 
-    // fixed visual angle (NOT derived from W/H fractions — that's what
-    // caused it to stretch and warp on wide laptop screens)
     const angle = (217 * Math.PI) / 180;
-    const dir = { x: Math.cos(angle), y: Math.sin(angle) }; // points up-left
+    const dir = { x: Math.cos(angle), y: Math.sin(angle) };
 
     const beamLength = R * 2.6;
-    const lineStart = { x: center.x - R * 0.15, y: center.y - R * 0.15 }; // launch point, near the corner
-    const lineEnd = { x: lineStart.x + dir.x * beamLength, y: lineStart.y + dir.y * beamLength };
+    const lineStart = { x: center.x - R * 0.15, y: center.y - R * 0.15 };
     const len = beamLength;
 
-    // find where this fixed line actually crosses the fixed circle
     const ox = lineStart.x - center.x;
     const oy = lineStart.y - center.y;
     const a = dir.x * dir.x + dir.y * dir.y;
@@ -64,7 +47,7 @@ if (canvas) {
     const c = ox * ox + oy * oy - R * R;
     const disc = b * b - 4 * a * c;
 
-    let contactT = 0.3; // fallback in case geometry doesn't intersect
+    let contactT = 0.3;
     if (disc >= 0) {
       const sq = Math.sqrt(disc);
       [(-b - sq) / (2 * a), (-b + sq) / (2 * a)].forEach(t => {
@@ -72,7 +55,7 @@ if (canvas) {
       });
     }
 
-    beamGeo = { center, R, lineStart, lineEnd, dir, len, contactT };
+    beamGeo = { center, R, lineStart, dir, len, contactT };
   }
   computeBeamGeometry();
   window.addEventListener('resize', computeBeamGeometry);
@@ -80,7 +63,7 @@ if (canvas) {
   function drawBeam() {
     const { center, R, lineStart, dir, len, contactT } = beamGeo;
 
-    // fixed quadrant arc, pinned bottom-right
+    // neon arc
     ctx.beginPath();
     ctx.arc(center.x, center.y, R, Math.PI, Math.PI * 1.5);
     ctx.strokeStyle = 'rgba(155,140,245,0.85)';
@@ -91,22 +74,16 @@ if (canvas) {
     ctx.stroke();
     ctx.shadowBlur = 0;
 
-    // faint persistent guide line
-    const lineEndX = lineStart.x + dir.x * len;
-    const lineEndY = lineStart.y + dir.y * len;
-   ctx.beginPath();
-   ctx.moveTo(lineStart.x, lineStart.y);
-   ctx.lineTo(lineEndX, lineEndY);
-   ctx.strokeStyle = 'rgba(155,140,245,0.35)';
-   ctx.lineWidth = 1.5;
-   ctx.shadowColor = '#7B5CF0';
-   ctx.shadowBlur = 8;
-   ctx.stroke();
-   ctx.shadowBlur = 0;
-
-    // ease toward the actual scroll position
-    smoothProgress += (scrollProgress - smoothProgress) * 0.08;
-    const t = smoothProgress;
+    // advance travel, one scroll trigger sends it all the way to the end
+    if (traveling) {
+      progress += 0.012;
+      if (progress >= 1) {
+        progress = 1;
+        traveling = false;
+        setTimeout(() => { progress = 0; }, 400);
+      }
+    }
+    const t = progress;
 
     const headX = lineStart.x + dir.x * len * t;
     const headY = lineStart.y + dir.y * len * t;
@@ -128,8 +105,7 @@ if (canvas) {
     ctx.stroke();
     ctx.shadowBlur = 0;
 
-    // glowing head, following scroll
-   // glowing head, following scroll — comet style (soft halo + bright core)
+    // comet tip
     ctx.beginPath();
     ctx.arc(headX, headY, 9, 0, Math.PI * 2);
     ctx.fillStyle = 'rgba(190,170,255,0.3)';
@@ -137,7 +113,7 @@ if (canvas) {
     ctx.shadowBlur = 26;
     ctx.fill();
     ctx.shadowBlur = 0;
-    
+
     ctx.beginPath();
     ctx.arc(headX, headY, 3.5, 0, Math.PI * 2);
     ctx.fillStyle = '#ffffff';
@@ -146,8 +122,7 @@ if (canvas) {
     ctx.fill();
     ctx.shadowBlur = 0;
 
-    // sparkle flash — strongest exactly as the head crosses the arc,
-    // fades smoothly the further you scroll from that point
+    // sparkle flash at contact point
     const contactX = lineStart.x + dir.x * len * contactT;
     const contactY = lineStart.y + dir.y * len * contactT;
     const proximity = Math.max(0, 1 - Math.abs(t - contactT) / 0.05);
@@ -162,38 +137,11 @@ if (canvas) {
       ctx.shadowBlur = 0;
     }
 
-    // quiet resting marker, always present
     ctx.beginPath();
     ctx.arc(contactX, contactY, 3, 0, Math.PI * 2);
     ctx.fillStyle = 'rgba(255,255,255,0.4)';
     ctx.fill();
   }
-
-  function drawParticles() {
-    ctx.clearRect(0, 0, W, H);
-    particles.forEach(p => {
-      p.x += p.vx; p.y += p.vy;
-      if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
-      if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(123,92,240,${p.o})`;
-      ctx.fill();
-    });
-    particles.forEach((a, i) => {
-      particles.slice(i + 1).forEach(b => {
-        const dist = Math.hypot(a.x - b.x, a.y - b.y);
-        if (dist < 130) {
-          ctx.beginPath();
-          ctx.moveTo(a.x, a.y);
-          ctx.lineTo(b.x, b.y);
-          ctx.strokeStyle = `rgba(123,92,240,${0.09 * (1 - dist / 130)})`;
-          ctx.lineWidth = 0.5;
-          ctx.stroke();
-        }
-      });
-    });
-    drawBeam();
     requestAnimationFrame(drawParticles);
   }
   drawParticles();
