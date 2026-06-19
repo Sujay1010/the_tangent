@@ -19,7 +19,7 @@ nav { display: flex; justify-content: space-between; align-items: center; paddin
 .logo span { color: #7B5CF0; transition: text-shadow 0.3s; }
 .logo:hover span { text-shadow: 0 0 24px rgba(123,92,240,0.9); }
 .nav-links { display: flex; gap: 2rem; font-size: 12px; color: #3a3a4a; letter-spacing: 1px; text-transform: uppercase; }
-.nav-links a { color: #888; text-decoration: none; transition: color 0.2s; }
+.nav-links a { color: #aaa; text-decoration: none; transition: color 0.2s; }
 .nav-links a:hover, .nav-links a.active { color: #7B5CF0; }
 
 /* HERO */
