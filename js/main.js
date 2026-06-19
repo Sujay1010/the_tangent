@@ -192,7 +192,7 @@ const observer = new IntersectionObserver((entries) => {
       }, parseInt(delay));
     }
   });
-}, { threshold: 0.12 });
+}, { threshold: 0 });
 
 document.querySelectorAll('.reveal, .reveal-left').forEach((el) => observer.observe(el));
 
@@ -216,4 +216,4 @@ setTimeout(() => {
     const rect = el.getBoundingClientRect();
     if (rect.top < window.innerHeight) el.classList.add('visible');
   });
-}, 120);
+}, 0);
