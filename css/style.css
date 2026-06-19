@@ -43,7 +43,7 @@ nav { display: flex; justify-content: space-between; align-items: center; paddin
 /* SECTION HEADS */
 .section-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
 .section-label { font-size: 10px; text-transform: uppercase; letter-spacing: 3px; color: #777; }
-.section-more { font-size: 11px; color: #222230; cursor: pointer; letter-spacing: 0.5px; transition: color 0.2s; text-decoration: none; }
+.section-more { font-size: 11px; color: #777; cursor: pointer; letter-spacing: 0.5px; transition: color 0.2s; text-decoration: none; }
 .section-more:hover { color: #7B5CF0; }
 
 /* CARDS (Rabbit Holes) */
