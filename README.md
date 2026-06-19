@@ -16,8 +16,8 @@ There are two types of writing here:
 
 | Format | Description |
 |---|---|
-| 🧠 **Brain Farts** | Short, reactive, probably half-baked - but honest. Quick thoughts that couldn't wait to be fully formed. |
-| 🕳️ **Rabbit Holes** | Long-form deep dives. Magazine-style pieces that actually went somewhere. |
+|  **Brain Farts** | Short, reactive, probably half-baked - but honest. Quick thoughts that couldn't wait to be fully formed. |
+|  **Rabbit Holes** | Long-form deep dives. Magazine-style pieces that actually went somewhere. |
 
 ---
 
