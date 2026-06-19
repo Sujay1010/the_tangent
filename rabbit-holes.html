@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/svg+xml" href="logo.svg">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rabbit Holes — The Tangent</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<canvas id="bg"></canvas>
+
+<div class="page">
+  <nav>
+    <a href="index.html" class="logo"><img src="logo.svg" height="28" style="margin-right:8px; vertical-align:middle;">The<span>Tangent</span></a>
+    <div class="nav-links">
+      <a href="brain-farts.html">Brain Farts</a>
+      <a href="rabbit-holes.html" class="active">Rabbit Holes</a>
+      <a href="about.html">About</a>
+    </div>
+  </nav>
+
+  <div class="page-header">
+    <div class="page-header-eyebrow">
+      <div class="hero-line"></div>
+      <div class="hero-type">Rabbit Holes</div>
+    </div>
+    <div class="page-header-title">Long reads.<br><span>Worth it.</span></div>
+    <div class="page-header-sub">The full deep dives. Pull up a chair — these ones went somewhere nobody expected.</div>
+  </div>
+
+  <div class="cards" id="rabbitholes-list"></div>
+  <div class="empty" id="empty-msg" style="display:none;">No Rabbit Holes yet. Check back soon.</div>
+
+  <footer>
+    <a href="index.html" class="footer-logo">The<span>Tangent</span></a>
+    <div class="footer-text">The part of the lecture nobody talks about</div>
+    <div class="footer-links">
+      <a href="brain-farts.html">Brain Farts</a>
+      <a href="rabbit-holes.html">Rabbit Holes</a>
+      <a href="about.html">About</a>
+    </div>
+  </footer>
+</div>
+
+<script src="articles.js"></script>
+<script src="js/main.js"></script>
+<script>
+  const list = document.getElementById('rabbitholes-list');
+  const empty = document.getElementById('empty-msg');
+  const rabbitholes = ARTICLES.filter(a => a.type === 'rabbithole');
+
+  if (rabbitholes.length === 0) {
+    list.style.display = 'none';
+    empty.style.display = 'block';
+  } else {
+    rabbitholes.forEach(a => {
+      const el = document.createElement('a');
+      el.href = a.file;
+      el.className = 'card';
+      el.innerHTML = `
+        <div class="card-tag">Rabbit Hole</div>
+        <div class="card-title">${a.title}</div>
+        <div class="card-meta">${a.time} · ${a.topic} · ${a.date}</div>
+      `;
+      list.appendChild(el);
+    });
+  }
+</script>
+</body>
+</html>
