@@ -8,7 +8,7 @@ const ARTICLES = [
   { slug: 'why-nobody-teaches-good-stuff',     type: 'rabbit-hole', title: 'Why nobody actually teaches you the good stuff',                  category: 'CS Theory',   readTime: '12 min', date: '2026-06-15' },
   { slug: 'entropy-and-codebases',             type: 'rabbit-hole', title: 'How entropy explains everything wrong with your codebase',          category: 'CS Theory',   readTime: '10 min', date: '2026-05-20' },
   { slug: 'nash-equilibrium-group-project',    type: 'rabbit-hole', title: 'The Nash equilibrium hiding in your group project',                 category: 'Game Theory', readTime: '9 min',  date: '2026-05-10' },
-  { slug: 'bayes-theorem-wrong',                type: 'rabbit-hole', title: "Bayes' theorem and why you're always wrong about being right",      category: 'Statistics',  readTime: '11 min', date: '2026-04-18' },
+  { slug: 'the-siblings-transforms',            type: 'rabbit-hole', title: "The Siblings - Fourier, Laplace and Z",      category: 'Mathematics',  readTime: '11 min', date: '2026-04-18' },
   { slug: 'thermodynamics-deadlines',           type: 'rabbit-hole', title: 'What thermodynamics actually has to say about deadlines',           category: 'Physics',     readTime: '8 min',  date: '2026-04-05' },
   { slug: 'gradient-descent-vibes',             type: 'brain-fart',  title: "Gradient descent is just vibes and we're all pretending",           category: 'ML',          readTime: '2 min',  date: '2026-06-18' },
   { slug: 'p-vs-np-society',                    type: 'brain-fart',  title: "P vs NP is honestly society's problem",                              category: 'Math',        readTime: '3 min',  date: '2026-06-08' },
