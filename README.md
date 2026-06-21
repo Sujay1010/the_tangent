@@ -44,9 +44,6 @@ Built with zero frameworks and zero dependencies — just:
 ---
 
 
----
-
-
 
 
 Live at: `https://sujay1010.github.io/the-tangent`
