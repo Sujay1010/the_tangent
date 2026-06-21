@@ -1,4 +1,101 @@
 // ============================================
+// 0. CENTRAL ARTICLE DATA + RENDER ENGINE
+// ============================================
+// Single source of truth for every article. Add/edit/remove an entry here
+// and it propagates to the homepage, the full listing pages, and every
+// "More" section automatically — no more hunting through 17 files.
+const ARTICLES = [
+  { slug: 'why-nobody-teaches-good-stuff',     type: 'rabbit-hole', title: 'Why nobody actually teaches you the good stuff',                  category: 'CS Theory',   readTime: '12 min', date: '2026-06-15' },
+  { slug: 'entropy-and-codebases',             type: 'rabbit-hole', title: 'How entropy explains everything wrong with your codebase',          category: 'CS Theory',   readTime: '10 min', date: '2026-05-20' },
+  { slug: 'nash-equilibrium-group-project',    type: 'rabbit-hole', title: 'The Nash equilibrium hiding in your group project',                 category: 'Game Theory', readTime: '9 min',  date: '2026-05-10' },
+  { slug: 'bayes-theorem-wrong',                type: 'rabbit-hole', title: "Bayes' theorem and why you're always wrong about being right",      category: 'Statistics',  readTime: '11 min', date: '2026-04-18' },
+  { slug: 'thermodynamics-deadlines',           type: 'rabbit-hole', title: 'What thermodynamics actually has to say about deadlines',           category: 'Physics',     readTime: '8 min',  date: '2026-04-05' },
+  { slug: 'gradient-descent-vibes',             type: 'brain-fart',  title: "Gradient descent is just vibes and we're all pretending",           category: 'ML',          readTime: '2 min',  date: '2026-06-18' },
+  { slug: 'p-vs-np-society',                    type: 'brain-fart',  title: "P vs NP is honestly society's problem",                              category: 'Math',        readTime: '3 min',  date: '2026-06-08' },
+  { slug: 'fourier-eavesdropping',               type: 'brain-fart',  title: 'The Fourier transform is just eavesdropping on signals',             category: 'Math',        readTime: '4 min',  date: '2026-05-22' },
+  { slug: 'recursion-cheating',                 type: 'brain-fart',  title: "Why recursion feels like cheating but actually isn't",               category: 'CS',          readTime: '3 min',  date: '2026-05-12' },
+  { slug: 'big-o-anxiety',                      type: 'brain-fart',  title: 'Big O notation is just anxiety with math notation',                  category: 'CS',          readTime: '2 min',  date: '2026-04-20' },
+  { slug: 'sorting-trust-issues',                type: 'brain-fart',  title: 'Every sorting algorithm is just trust issues in code form',          category: 'CS',          readTime: '3 min',  date: '2026-04-08' },
+  { slug: 'central-limit-theorem',              type: 'brain-fart',  title: 'The Central Limit Theorem is the universe saying calm down',         category: 'Statistics',  readTime: '4 min',  date: '2026-03-15' },
+  { slug: 'overfitting-exam',                   type: 'brain-fart',  title: 'Overfitting is just memorising the exam and failing life',           category: 'ML',          readTime: '2 min',  date: '2026-03-05' },
+  { slug: 'newtons-third-law-petty',             type: 'brain-fart',  title: "Newton's third law is just the universe being petty",               category: 'Physics',     readTime: '3 min',  date: '2026-02-10' }
+];
+
+// The single featured article shown in the homepage hero. Change this to
+// feature a different post — the homepage "Rabbit Holes" row automatically
+// excludes whichever slug is featured here.
+const FEATURED_SLUG = 'why-nobody-teaches-good-stuff';
+
+const TYPE_LABEL = { 'rabbit-hole': 'Rabbit Hole', 'brain-fart': 'Brain Fart' };
+
+function articleHref(slug) {
+  const inArticles = location.pathname.includes('/articles/');
+  return (inArticles ? '../' : '') + 'articles/' + slug + '.html';
+}
+
+function monthYear(iso) {
+  const d = new Date(iso + 'T00:00:00');
+  return d.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+}
+
+function byNewest(a, b) {
+  return new Date(b.date) - new Date(a.date);
+}
+
+function cardHTML(a, withDate) {
+  const meta = withDate ? `${a.readTime} · ${a.category} · ${monthYear(a.date)}` : `${a.readTime} · ${a.category}`;
+  return `<a href="${articleHref(a.slug)}" class="card" data-date="${a.date}">
+    <div class="card-tag">${TYPE_LABEL[a.type]}</div>
+    <div class="card-title">${a.title}</div>
+    <div class="card-meta">${meta}</div>
+  </a>`;
+}
+
+function blipHTML(a, withDate) {
+  const meta = withDate ? `${a.readTime} · ${a.category} · ${monthYear(a.date)}` : `${a.readTime} · ${a.category}`;
+  return `<a href="${articleHref(a.slug)}" class="blip" data-date="${a.date}">
+    <div class="blip-tag">${TYPE_LABEL[a.type]}</div>
+    <div class="blip-title">${a.title}</div>
+    <div class="blip-meta">${meta}</div>
+  </a>`;
+}
+
+function currentSlug() {
+  return location.pathname.split('/').pop().replace('.html', '');
+}
+
+document.querySelectorAll('[data-render]').forEach(container => {
+  const mode = container.dataset.render;
+  let list = [];
+  let html = '';
+
+  if (mode === 'home-rabbit-holes') {
+    list = ARTICLES.filter(a => a.type === 'rabbit-hole' && a.slug !== FEATURED_SLUG).sort(byNewest).slice(0, 3);
+    html = list.map(a => cardHTML(a, false)).join('');
+  } else if (mode === 'home-brain-farts') {
+    list = ARTICLES.filter(a => a.type === 'brain-fart').sort(byNewest).slice(0, 4);
+    html = list.map(a => blipHTML(a, false)).join('');
+  } else if (mode === 'all-rabbit-holes') {
+    list = ARTICLES.filter(a => a.type === 'rabbit-hole').sort(byNewest);
+    html = list.map(a => cardHTML(a, true)).join('');
+  } else if (mode === 'all-brain-farts') {
+    list = ARTICLES.filter(a => a.type === 'brain-fart').sort(byNewest);
+    html = list.map(a => blipHTML(a, false)).join('');
+  } else if (mode === 'more') {
+    const self = ARTICLES.find(a => a.slug === currentSlug());
+    const type = self ? self.type : 'brain-fart';
+    list = ARTICLES.filter(a => a.type === type && a.slug !== currentSlug()).sort(byNewest).slice(0, 3);
+    html = type === 'rabbit-hole' ? list.map(a => cardHTML(a, false)).join('') : list.map(a => blipHTML(a, false)).join('');
+  }
+
+  if (list.length === 0) {
+    container.innerHTML = '<div class="empty">Nothing here yet.</div>';
+  } else {
+    container.innerHTML = html;
+  }
+});
+
+// ============================================
 // 1. TYPING EFFECT ON HERO TITLE
 // ============================================
 const heroTitle = document.querySelector('.hero-title');
@@ -209,18 +306,6 @@ document.querySelectorAll('.about-stat-num').forEach(el => {
   countObserver.observe(el);
 });
 
-// ============================================
-// 5. AUTO-SORT CARDS/BLIPS BY DATE (newest first)
-// ============================================
-function sortByDate(containerSelector, itemSelector) {
-  document.querySelectorAll(containerSelector).forEach(container => {
-    const items = Array.from(container.querySelectorAll(itemSelector));
-    items.sort((a, b) => new Date(b.dataset.date) - new Date(a.dataset.date));
-    items.forEach(item => container.appendChild(item));
-  });
-}
-sortByDate('.cards', '.card');
-sortByDate('.blips', '.blip');
 
 // ============================================
 // SCROLL REVEAL

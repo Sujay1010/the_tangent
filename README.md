@@ -44,24 +44,6 @@ Built with zero frameworks and zero dependencies — just:
 ---
 
 
-## Folder Structure
-
-```
-the-tangent/
-├── index.html
-├── about.html
-├── brain-farts.html
-├── rabbit-holes.html
-├── article.html
-├── css/
-│   └── style.css
-└── js/
-    └── main.js
-```
-
----
-
-
 
 
 Live at: `https://sujay1010.github.io/the-tangent`
